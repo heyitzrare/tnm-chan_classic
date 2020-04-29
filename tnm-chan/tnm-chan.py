@@ -1,4 +1,5 @@
 ### TNM-chan ###
+## v20.118-r1 ##
 
 # I'm getting started! First, I'll import/load libraries and stuff.
 import traceback
@@ -7,6 +8,7 @@ import sys
 import pickle
 import time
 import asyncio
+from random import choice
 try: color = sys.stdout.shell
 except AttributeError: raise RuntimeError("Use IDLE")
 import random
@@ -99,7 +101,7 @@ async def goto(ctx, arg1 = 'fail', arg2 = 'fail'):
 # ...I'll send an error in a DM.
             try:
                 await name.send('**Sorry, but...** The floor you requested doesn\'t have a lobby.')
-                color.write('Whoops! There was no lobby for floor ' + str(arg2.lower()) + '.\n\n', 'COMMENT')
+                color.write('Whoops! There was no lobby for floor ' + str(arg2.lower()) + '.\n\n', 'KEYWORD')
                 return
             except discord.Forbidden:
                 await source.send(dmError)
@@ -152,11 +154,11 @@ async def goto(ctx, arg1 = 'fail', arg2 = 'fail'):
 # I'll let the terminal know before starting.
         destination = arg2.lower()
         color.write('I\'m starting room movement... ', 'DEFINITION')
-        color.write(str(name) + ' is trying to move from ' + str(source) + ' to ' + str(destination) + ' on ' + str(sourcecat) + '\n', 'COMMAND')
+        color.write(str(name) + ' is trying to move from ' + str(source) + ' to ' + str(destination) + '\n', 'COMMAND')
 # First, I'll make sure I'm not wasting time.
         destination = str(arg2.lower()) + '-' + str(src.split('-')[1])
 # If it turns out I am...
-        if source == destination:
+        if src == destination:
 # ...I'll send an error message in a DM.
             try:
                 await name.send('Hey, I don\'t move you if you\'re already in the right room~')
@@ -173,7 +175,7 @@ async def goto(ctx, arg1 = 'fail', arg2 = 'fail'):
 # ...I'll send an error in a DM.
             try:
                 await name.send('**Sorry, but...** The room you requested doesn\'t exist.')
-                color.write('Whoops! They tried to move to a channel that doesn\'t exist.\n\n', 'COMMENT')
+                color.write('Whoops! They tried to move to a channel that doesn\'t exist.\n\n', 'KEYWORD')
                 return
             except discord.Forbidden:
                 await source.send(dmError)
@@ -186,10 +188,15 @@ async def goto(ctx, arg1 = 'fail', arg2 = 'fail'):
             if len(newch[0].members) - 2 > 0:
 # If there are people there, I'll ask for permission.
                 try:
-                    with open('chost.tnmc', 'rb+') as f:
-                        host = pickle.load(f)[str(newch[0]) + '-host']
+                    try:
+                        with open('chost.tnmc', 'rb+') as f:
+                            host = pickle.load(f)[str(newch[0]) + '-host']
+                    except KeyError:
+                        await name.send('**Eep!** Sorry, I think I forgot the host of `#' + str(newch[0]) + '`... Could you let `HeyItzRare#0987` know? He\'ll be able to fix it!')
+                        color.write('AHH!! I forgot the host of ' + str(newch[0]) + '!! Please fix this, like, soon!\n\n', 'COMMENT')
+                        return
                     host = ctx.guild.get_member(host)
-                    reactm = await host.send(name.mention + ' wants to join ' + str(source) + '. You must react within 10 seconds to accept.')
+                    reactm = await host.send(str(name) + ' wants to join ' + str(source) + '. You must react within 10 seconds to accept.')
                     await reactm.add_reaction('☑')
                     def check(reaction, user):
                         return reaction.count > 1 and reaction.message.id == reactm.id and str(reaction.emoji) == '☑'
@@ -201,7 +208,7 @@ async def goto(ctx, arg1 = 'fail', arg2 = 'fail'):
                     try:
                         await reactm.edit(content='Permission was automatically denied.')
                         await name.send('Unfortunately, a channel member didn\'t let you in...')
-                        color.write('no reaction from the host, so permission denied.\n\n', 'KEYWORD')
+                        color.write('no reaction from the host, so permission was automatically denied.\n\n', 'KEYWORD')
                         return
                     except discord.Forbidden:
                         await source.send(dmError)
@@ -217,8 +224,39 @@ async def goto(ctx, arg1 = 'fail', arg2 = 'fail'):
                         chost = {}
                         newid = int(name.id)
                         pickle.dump({str(newch[0]) + '-host': int(newid)}, f)
-                    await name.send('**Hi!** Since you\'re the first person to join the channel, you\'re its host. If anyone else tries to join, I\'ll ask you.')
-                    color.write('I just made ' + str(name) + ' the channel host.\n', 'DEFINITION')
+                    await name.send('**Hi!** Since you\'re the first person to join the room, you\'re its host. If anyone else tries to join, I\'ll ask you.')
+                    color.write('I just made ' + str(name) + ' the room host.\n', 'DEFINITION')
+                except discord.Forbidden:
+                    await source.send(dmError)
+                    return
+# If the user is currently the room host...
+        test = str(src.split('-')[0]) == 'lobby' or str(src.split('-')[0]) == 'entroom'
+        if len(source.members) - 2 > 0 and test == False:
+            try:
+                with open('chost.tnmc', 'rb+') as f:
+                    host = pickle.load(f)[str(source) + '-host']
+            except KeyError:
+                await name.send('**Eep!** Sorry, I think I forgot the host of `#' + str(source) + '`... Could you let `HeyItzRare#0987` know? He\'ll be able to fix it!')
+                color.write('AHH!! I forgot the host of ' + str(source) + '!! Please fix this, like, soon!\n\n', 'COMMENT')
+                return
+            host = ctx.guild.get_member(host)
+            if name == host:
+# ...I'll assign another random member to be the new host of the room.
+                try:
+                    newhost = choice(ctx.message.channel.guild.members)
+                    nhid = int(newhost.id)
+                    counter = 1
+#                    while  nhid == 701034723245424732 or nhid == 701016349404561415: # Repeats the operation if it selects me or TNM's admin account.
+                    while nhid == 703983519701139598 or nhid == 339475341330612225: # Only for the beta server.
+                        newhost = choice(ctx.message.channel.guild.members)
+                        nhid = int(newhost.id)
+                        counter = counter + 1
+                    with open('chost.tnmc', 'rb+') as f:
+                        chost = {}
+                        pickle.dump({str(source) + '-host': int(nhid)}, f)
+                    host = ctx.guild.get_member(host)
+                    await newhost.send('**Hi!** Since the previous host just left ' + str(source) + ', you\'re its new host now. If anyone else tries to join, I\'ll ask you.')
+                    color.write(str(name) + ' just left, so I made ' + str(newhost) + 'the new room host. It took ' + str(counter) + ' tries to find a new host.\n', 'DEFINITION')
                 except discord.Forbidden:
                     await source.send(dmError)
                     return
@@ -229,7 +267,7 @@ async def goto(ctx, arg1 = 'fail', arg2 = 'fail'):
         color.write('Taken permissions for ' + str(source) + '...\n', 'COMMAND')
 # Then, I'll send a message in the source channel, stating the user has left.
         response = str(name.mention) + ' has left the room.'
-        await newch[0].send(response)
+        await source.send(response)
 # Next, I'll send a message to the destination channel, stating the user has joined.
         response = str(name.mention) + ' has entered the room.'
         await newch[0].send(response)
@@ -237,7 +275,7 @@ async def goto(ctx, arg1 = 'fail', arg2 = 'fail'):
         await newch[0].set_permissions(name, overwrite=overwrite)
         color.write('Given permissions for lobby-f' + str(destination[0]) + '...\n', 'COMMAND')
 # And now I'm done!
-        color.write('And they\'re in the new room~\n\n', 'STRING')
+        color.write('And they\'ve been moved to the new room!\n\n', 'STRING')
 
 ## But...maybe they forgot arg1.
     elif arg1 == 'fail':
