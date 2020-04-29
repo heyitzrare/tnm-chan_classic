@@ -246,8 +246,7 @@ async def goto(ctx, arg1 = 'fail', arg2 = 'fail'):
                     newhost = choice(ctx.message.channel.guild.members)
                     nhid = int(newhost.id)
                     counter = 1
-#                    while  nhid == 701034723245424732 or nhid == 701016349404561415: # Repeats the operation if it selects me or TNM's admin account.
-                    while nhid == 703983519701139598 or nhid == 339475341330612225: # Only for the beta server.
+                    while  nhid == [number]: # Replace this so I don't accidentally make myself - or you - the server host.
                         newhost = choice(ctx.message.channel.guild.members)
                         nhid = int(newhost.id)
                         counter = counter + 1
