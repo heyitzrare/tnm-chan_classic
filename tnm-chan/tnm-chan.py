@@ -243,11 +243,11 @@ async def goto(ctx, arg1 = 'fail', arg2 = 'fail'):
             if name == host:
 # ...I'll assign another random member to be the new host of the room.
                 try:
-                    newhost = choice(ctx.message.channel.guild.members)
+                    newhost = choice(source.members)
                     nhid = int(newhost.id)
                     counter = 1
                     while  nhid == [number]: # Replace this so I don't accidentally make myself - or you - the server host.
-                        newhost = choice(ctx.message.channel.guild.members)
+                        newhost = choice(source.members)
                         nhid = int(newhost.id)
                         counter = counter + 1
                     with open('chost.tnmc', 'rb+') as f:
