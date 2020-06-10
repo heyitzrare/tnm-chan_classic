@@ -17,7 +17,7 @@ opIDs = [
 import traceback
 import os
 import sys
-import pickle
+import shelve
 import time
 import asyncio
 from random import choice
