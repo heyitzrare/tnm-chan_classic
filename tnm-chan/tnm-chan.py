@@ -1,5 +1,6 @@
 ### TNM-chan ###
 ### v 20.162 ###
+### hotfix 1 ###
 
 ###IMPORTANT!###
 # Put your Discord username in between the quotes - make sure this is right, because I send it if something goes wrong!
@@ -291,7 +292,7 @@ async def goto(ctx, arg1 = '[none]', arg2 = '[none]'):
                         return
 # If the user is currently the room host...
             test = str(src.split('-')[0]) == 'lobby' or str(src.split('-')[0]) == 'entroom'
-            if len(source.members) - 2 > 0 and not test:
+            if len(source.members) - 3 > 0 and not test:
                 try:
                     with shelve.open('chost') as f:
                         host = f[str(source) + '-host']
@@ -313,8 +314,7 @@ async def goto(ctx, arg1 = '[none]', arg2 = '[none]'):
                         with shelve.open('chost') as f:
                             chost = {}
                             f[str(source) + '-host'] = int(nhid)
-                        nhost = ctx.guild.get_member(newhost)
-                        await nhost.send('**Hi!** Since the previous host just left ' + str(source) + ', you\'re its new host now. If anyone else tries to join, I\'ll ask you.')
+                        await newhost.send('**Hi!** Since the previous host just left ' + str(source) + ', you\'re its new host now. If anyone else tries to join, I\'ll ask you.')
                         Intent(str(name) + ' just left, so I made ' + str(newhost) + 'the new room host. It took ' + str(counter) + ' tries to find a new host.')
                     except discord.Forbidden:
                         await source.send(dmError)
@@ -345,16 +345,6 @@ async def goto(ctx, arg1 = '[none]', arg2 = '[none]'):
             Information('Given permissions for ' + str(convert) + '-f' + str(dsf[0]) + '...')
 # And now I'm done!
             Success('Room movement finished!\n')
-
-# Oh, and if the current host is the last one to leave...
-            if len(source.members) - 2 == 0 and not test:
-# ...I'll recreate the channel to clear out the messages.
-                Information('Everyone\'s left, so I\'ll recreate the channel to clear its messages...')
-                pos = int(source.position)
-                cch = await source.clone()
-                await source.delete()
-                await cch.edit(position=pos)
-                Success('Alright, done!\n')
 
 ## In case they forgot arg1...
         elif arg1 == '[none]':
