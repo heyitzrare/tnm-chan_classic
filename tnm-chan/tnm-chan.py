@@ -391,8 +391,8 @@ async def goto(ctx, arg1 = '[none]', arg2 = '[none]'):
                         return
                     except discord.Forbidden:
                         await source.send(dmError)
-                    await setStatus()
-                    return
+                        await setStatus()
+                        return
 # Or, if they're the first person to join that room...
                 elif len(newch[0].members) - len(opIDs) == 0:
 # ...I'll set them as that room's host, then let them know.
