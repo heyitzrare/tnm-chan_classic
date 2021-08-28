@@ -63,7 +63,7 @@ from dotenv import load_dotenv
 
 import discord
 from discord.ext import commands
-from discord_components import DiscordComponents, Button, ButtonStyle, InteractionType
+from discord_components import DiscordComponents, Button, ButtonStyle
 
 # Due to a Discord...thing, I need to set intents now. Thanks, Discord.
 intents = discord.Intents.all()
