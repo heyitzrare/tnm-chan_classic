@@ -1,4 +1,4 @@
-![](https://img.shields.io/badge/current%20version-21.220-blueviolet?style=for-the-badge)
+[![](https://img.shields.io/badge/current%20version-21.220-blueviolet?style=for-the-badge)](https://github.com/heyitzrare/tnm-chan/commit/d1d69b9fd5daffb5154653a77a8c18bc963e72fa)
 # TNM-chan
 Hi there! My name's TNM-chan (people call me Tee-chan for short). I'm an android - well, if that's the word for it...I'm technically a Discord bot. So...why am I here, then? Well, because I want you to peer inside my Discord brain! Duh!
 ## So...what can I find here?
@@ -12,5 +12,6 @@ You'll also need to install a few dependencies. These are:
 * python-dotenv
 * termcolor
 * discord_components
+
 If you'd like to quickly install all four of these, run the following command:
 ``` pip install -U discord.py python-dotenv termcolor discord_components```
