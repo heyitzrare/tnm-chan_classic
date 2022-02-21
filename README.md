@@ -1,4 +1,4 @@
-[![](https://img.shields.io/badge/current%20version-21.220-blueviolet?style=for-the-badge)](https://github.com/heyitzrare/tnm-chan/commit/d1d69b9fd5daffb5154653a77a8c18bc963e72fa)
+[![](https://img.shields.io/badge/current%20version-22.051-blueviolet?style=for-the-badge)](https://github.com/heyitzrare/tnm-chan/commit/d1d69b9fd5daffb5154653a77a8c18bc963e72fa)
 # TNM-chan
 Hi there! My name's TNM-chan (people call me Tee-chan for short). I'm an android - well, if that's the word for it...I'm technically a Discord bot. Still, it counts, right?
 ## So...what can I find here?
